@@ -12,6 +12,7 @@
 #include "xparameters.h"
 #include "xbasic_types.h"
 #include "xutil.h"
+#include "xuartlite.h"
 
 #define printf xil_printf
 #define NUM_TEST_WORDS 8
@@ -20,11 +21,30 @@
 #define HRES 1280	// Pixels
 #define VRES 720	// Pixels
 
-#define FRAME_SIZE_BYTES 0x400000	// 1280*720 pixels * 4 bytes/pixel = 0x384000 + some extra space
-#define FRAME0_OFFSET	0x0
-#define FRAME1_OFFSET	(FRAME0_OFFSET + FRAME_SIZE_BYTES)
+// Define memory base address for 3 key frames (Draw, Video, Composite)
+#define FRAME_SIZE_BYTES 0x384000	// 1280*720 pixels * 4 bytes/pixel = 0x384000 + some extra space
+#define DRAWFRAME_OFFSET	0x0
+#define VIDEOFRAME_OFFSET	(DRAWFRAME_OFFSET + FRAME_SIZE_BYTES)
+#define COMPFRAME_OFFSET	(VIDEOFRAME_OFFSET + FRAME_SIZE_BYTES)
+
+
+// Define Box for Frame1 (x1,y1), (x2,y2)
+#define BOX_X0 	HRES/3
+#define BOX_Y0 	VRES/3
+#define BOX_X1 	2*HRES/3
+#define BOX_Y1 	2*VRES/3
+
+// Define colours
+#define WHITE	0xFFFFFF00		// R_G_B_(Don't care, assume 0 in SW)
+#define BLACK	0x00000000
+#define RED		0xFF000000
+#define BLUE	0x0000FF00
+#define GREEN	0x00FF0000
+#define YELLOW	0xFFFF0000
 
 #define DEBUG 1
+
+XUartLite UartLite;
 
 int main() {
 
@@ -33,10 +53,17 @@ int main() {
 	volatile u32 *frame_overlay_addr = (volatile u32 *) XPAR_FRAME_MERGE_0_BASEADDR;
 	volatile int *hdmi_addr = (int *) XPAR_HDMI_OUT_0_BASEADDR;
 
+	u32 pixel_value = 0x0;
+	u32 draw_frame_pixel = 0x0;
+	u32 video_frame_pixel = 0x0;
+	u32 comp_frame_pixel = 0x0;
+
 	XStatus status;
 
-	int i, j, k;
-	int DELAY = 10000;
+	int i, j;
+	//int k;
+	//int DELAY = 10000;
+	char input;
 
 	status = XUtil_MemoryTest32((u32 *) ddr_addr,
 								NUM_TEST_WORDS,
@@ -48,13 +75,12 @@ int main() {
 		return -1;
 	}
 
-	/*
-	printf(
-			"32-bit test: %s\n\r",
-			(XST_SUCCESS == XUtil_MemoryTest32((u32 *)ddr_addr, NUM_TEST_WORDS,
-					TEST_VECTOR, XUT_ALLMEMTESTS)) ? "passed" : "failed");
-	 */
-
+	status = XUartLite_Initialize(&UartLite, XPAR_UARTLITE_1_DEVICE_ID);
+	if (XST_SUCCESS != status)
+	{
+		printf("Error - UartLite self test failed. Exiting...\r\n");
+		return -1;
+	}
 
 	// -- FRAME OPERATIONS --
 
@@ -67,42 +93,99 @@ int main() {
 	hdmi_addr[2] = 1;
 
 	// Set slave registers for frame_merge custom pcore
-	frame_overlay_addr[0] = (int)(ddr_addr + FRAME1_OFFSET);	// Base addr for target frame in memory
-	frame_overlay_addr[1] = 1; 		// Go register for IP
+	//--frame_overlay_addr[0] = (int)(ddr_addr + DRAWFRAME_OFFSET);	// Base addr for target frame in memory
+	//--frame_overlay_addr[1] = 1; 		// Go register for IP
 #ifdef DEBUG
 	printf("DEBUG: frame slavereg0 = %x\n\r", frame_overlay_addr[0]);	// DEBUG
 #endif
 
-	// Initialize Frame 0
+	// Initialize DrawFrame - image to draw on top of VideoFrame
 	for (j = 0; j < VRES; j++)
 	{
 		for (i = 0; i < HRES; i++)
 		{
-			ddr_addr[FRAME0_OFFSET + j * HRES + i] = 0xffffffff;	// Pure white frame
+			if(i >= BOX_X0 && i < BOX_X1 && j >= BOX_Y0 && j < BOX_Y1)
+			{
+				pixel_value = YELLOW;	// Yellow box
+			} else
+			{
+				pixel_value = WHITE;	// in a white frame
+			}
+			ddr_addr[DRAWFRAME_OFFSET + j * HRES + i] = pixel_value;
 		}
 	}
 
-	// Initialize Frame 1
+	// Initialize VideoFrame (input video, simulate as constant blue)
 	for (j = 0; j < VRES; j++)
 	{
 		for (i = 0; i < HRES; i++)
 		{
-			ddr_addr[FRAME1_OFFSET + j * HRES + i] = 0x0000ff00;	// Pure blue frame
+			pixel_value = BLUE;
+			ddr_addr[VIDEOFRAME_OFFSET + j * HRES + i] = pixel_value;
 		}
 	}
 
+	// Initialize CompositeFrame (output video = VideoFrame + DrawFrame. Initialize as black)
+	for (j = 0; j < VRES; j++)
+	{
+		for (i = 0; i < HRES; i++)
+		{
+			pixel_value = BLACK;
+			ddr_addr[COMPFRAME_OFFSET + j * HRES + i] = pixel_value;
+		}
+	}
 
-	hdmi_addr[1] = (int)(ddr_addr + FRAME1_OFFSET);		// Display Frame1, not Frame0
-	int max = hdmi_addr[1] + FRAME_SIZE_BYTES;	// word addressable
+	hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);		// Display Frame1, not Frame0
 
-	// Currently just prints out Frame1 on top of Frame2 for max bytes (max/4 pixels)... -wr
+	// -- MERGE FRAMES
+	// Read pixel from DrawFrame and VideoFrame.
+	// If pure white, white VideoFrame pixel to CompFrame.
+	// else write DrawFrame pixel to CompFrame.
+	// Repeat while pixels in (DrawFrame, VideoFrame)
+	for (j = 0; j < VRES; j++)
+	{
+		for(i = 0; i < HRES; i++)
+		{
+			// 1) Read DrawFrame and VideoFrame from DDR memory
+			draw_frame_pixel = ddr_addr[DRAWFRAME_OFFSET + j*HRES + i];
+			video_frame_pixel = ddr_addr[VIDEOFRAME_OFFSET + j*HRES + i];
+
+			// 2) Evaluate new pixel
+			if (WHITE != draw_frame_pixel)
+			{
+				comp_frame_pixel = draw_frame_pixel;
+			}
+			else
+			{
+				comp_frame_pixel = video_frame_pixel;
+			}
+
+			// 3) Write new pixel to DDR memory
+			ddr_addr[COMPFRAME_OFFSET + j*HRES + i] = comp_frame_pixel;
+		}
+	}
+
+	// Allow user to switch between draw, video, and comp frames
+	// to output to screen
+	input = 0;
 	while(1)
 	{
-		if(frame_overlay_addr[0] <= max)
+		XUartLite_Recv(&UartLite, &input, 1);	// Recv 1 byte (char) and store into buffer
+		switch (input)
 		{
-			frame_overlay_addr[0] += 128;	// Move write pointer down 128 pixels (16 pixels)
+		case '0':	// DrawFrame
+			hdmi_addr[1] = (int)(ddr_addr + DRAWFRAME_OFFSET);
+			break;
+		case '1':	// VideoFrame
+			hdmi_addr[1] = (int)(ddr_addr + VIDEOFRAME_OFFSET);
+			break;
+		case '2':	// CompFrame
+			hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);
+			break;
+		default:
+			hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);
+			break;
 		}
-		for (k=0;k<DELAY;k++);
 	}
 
 	printf("Exiting\n\r");
