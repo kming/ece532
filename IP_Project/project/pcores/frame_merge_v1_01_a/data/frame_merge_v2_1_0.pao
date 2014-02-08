@@ -1,0 +1,13 @@
+##############################################################################
+## Filename:          E:/GitHub/ece532/IP_Project/FrameMergeIP/pcores/frame_merge_v1_01_a/data/frame_merge_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Fri Jan 31 01:46:01 2014 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib proc_common_v3_00_a  all 
+lib axi_lite_ipif_v1_01_a  all 
+lib axi_master_burst_v1_00_a  all 
+lib frame_merge_v1_01_a frame_merge_core verilog
+lib frame_merge_v1_01_a user_logic verilog
+lib frame_merge_v1_01_a frame_merge vhdl
+lib frame_merge_v1_01_a srl_fifo_f vhdl

@@ -1,0 +1,10 @@
+-batch 
+-create frame_merge 
+-ver 1.01.a 
+-dir "E:\GitHub\ece532\IP_Project\FrameMergeIP" 
+-lang verilog 
+-bus axi4 ms 
+-burst m 32 
+-axi4_opt len_wid 20 
+-reg 12 
+-xps 
