@@ -65,39 +65,46 @@ void TrackWand (CvMat *mat, coordinates *pos)
 {
 	pos->x = -1;
 	pos->y = -1;
-	int xstep = 10;
-	int ystep = 10;
-	int threshold = xstep*ystep*30; // number of pixels in the window * the tolerance per blue component of a pixel
-	int int_threshold = xstep * ystep * 3 * 200; // intensity threshold, you want the average intensity of the pixels to be above 230 for every colour space
+	int xstep = 4;									// horizontal window size
+	int ystep = 4;									// vertical window size
+	int threshold = xstep * ystep * 30;				// number of pixels in the window * the total tolerance per pixel
+	int intensity_min = xstep * ystep * 3 * 150;	// minimum intensity threshold, a minimum ensures that it is activated by a bright enough source, i.e a light, not a random object
+	int intensity_max = xstep * ystep * 3 * 200;	// maximum intensity threshold, a maximum to ensure it isn't a bright white light
 	int prev_sumofdiff = threshold;
 
-	// Assume a 4x4 window, and ignore boundary conditions
+	// Performance enhancement --> instead of a sliding window that shifts by 1 pixel, shifts over by the size of the window. (not as smooth, but much faster since it goes through a lot less pixels)
 	for (int x = 0; x < mat->width-xstep; x = x+xstep)
 	{
 		for (int y = 0; y <mat->height-ystep; y = y+ystep)
 		{
-			
+			// reset intensity and sum of difference calculations
 			int sumofdiff = 0;
 			int intensity = 0;
+
+			// iterate over the whole window
 			for (int offsetx = x;  offsetx < x+xstep; offsetx++)
 			{
 				for (int offsety = y;  offsety < y+ystep; offsety++) 
 				{
-					
-					// printf( "( %d, %d)\n",offsetx, offsety);
-					// sum up the differences between the wand and the desired color
+					// Determine the RGB values for the pixel
 					CvScalar scal = cvGet2D (mat, offsety, offsetx);
-					// Make sure its the colour blue
+					// measures absolute difference of the blue component in the sliding window
 					sumofdiff = sumofdiff + 255 - scal.val[0];
-					// Make sure the other colours are higher than 150, to track a "light"
+
+					// measure intensity of the whole sliding window
 					intensity = intensity + scal.val[0] + scal.val[1] + scal.val[2];
-					//cvSet2D(sum_of_diff, offsety, offsetx, scal);
 				}
 			}
 
-			// printf ("%d : %d : %d : %d\n", x, y, sumofdiff, intensity);
-			if ((sumofdiff < threshold) && (sumofdiff < prev_sumofdiff) && (intensity > int_threshold))
+
+			// Several checking factors:
+			//  - Blue colour is dominant
+			//  - Find the best match in the frame --> only 1
+			//  - Intensity is high enough to be a light
+			//  - Intensity isn't high enough to be a white light
+			if ((sumofdiff < threshold) && (sumofdiff < prev_sumofdiff) && (intensity > intensity_min) && (intensity < intensity_max))
 			{
+				// the center of the sliding window is the x,y coordinates
 				prev_sumofdiff = sumofdiff;
 				pos->x = (int) ceil(x + xstep/2);
 				pos->y = (int) ceil(y + ystep/2);
