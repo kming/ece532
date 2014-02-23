@@ -1,7 +1,7 @@
 
-<EDKSYSTEM EDKVERSION="14.2" EDWVERSION="1.2" TIMESTAMP="Sun Feb 02 13:19:22 2014">
+<EDKSYSTEM EDKVERSION="14.2" EDWVERSION="1.2" TIMESTAMP="Sat Feb 22 20:11:26 2014">
 
-  <SYSTEMINFO ARCH="spartan6" DEVICE="xc6slx45" PACKAGE="csg324" PART="xc6slx45csg324-3" SOURCE="E:/Xilinx/ECE532/debug/Test2/system.xmp" SPEEDGRADE="-3"/>
+  <SYSTEMINFO ARCH="spartan6" DEVICE="xc6slx45" PACKAGE="csg324" PART="xc6slx45csg324-3" SOURCE="C:/Users/Keiming/Desktop/Test2/project/system.xmp" SPEEDGRADE="-3"/>
 
   <EXTERNALPORTS>
     <PORT DIR="IO" MHS_INDEX="0" NAME="zio" SIGNAME="zio">
@@ -133,7 +133,7 @@
       <DESCRIPTION TYPE="SHORT">Processor System Reset Module</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">Reset management module</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/proc_sys_reset_v3_00_a/doc/proc_sys_reset.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/proc_sys_reset_v3_00_a/doc/proc_sys_reset.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -401,7 +401,7 @@
         <PARAMETER ADDRESS="BASE" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="2" MPD_INDEX="0" MSB="0" NAME="C_BASEADDR" TYPE="std_logic_vector" VALUE="0x00000000">
           <DESCRIPTION>LMB BRAM Base Address</DESCRIPTION>
         </PARAMETER>
-        <PARAMETER ADDRESS="HIGH" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="3" MPD_INDEX="1" MSB="0" NAME="C_HIGHADDR" TYPE="std_logic_vector" VALUE="0x0000ffff">
+        <PARAMETER ADDRESS="HIGH" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="3" MPD_INDEX="1" MSB="0" NAME="C_HIGHADDR" TYPE="std_logic_vector" VALUE="0x0000FFFF">
           <DESCRIPTION>LMB BRAM High Address</DESCRIPTION>
         </PARAMETER>
         <PARAMETER ASSIGNMENT="OPTIONAL" CHANGEDBY="SYSTEM" MPD_INDEX="2" NAME="C_FAMILY" TYPE="string" VALUE="spartan6"/>
@@ -845,7 +845,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
       <MEMORYMAP>
-        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000ffff" MEMTYPE="MEMORY" MINSIZE="0x800" SIZE="65536" SIZEABRV="64K">
+        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000FFFF" MEMTYPE="MEMORY" MINSIZE="0x800" SIZE="65536" SIZEABRV="64K">
           <SLAVES>
             <SLAVE BUSINTERFACE="SLMB"/>
             <SLAVE BUSINTERFACE="SLMB1"/>
@@ -1024,7 +1024,7 @@
         <PARAMETER ADDRESS="BASE" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="2" MPD_INDEX="0" MSB="0" NAME="C_BASEADDR" TYPE="std_logic_vector" VALUE="0x00000000">
           <DESCRIPTION>LMB BRAM Base Address</DESCRIPTION>
         </PARAMETER>
-        <PARAMETER ADDRESS="HIGH" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="3" MPD_INDEX="1" MSB="0" NAME="C_HIGHADDR" TYPE="std_logic_vector" VALUE="0x0000ffff">
+        <PARAMETER ADDRESS="HIGH" ADDR_TYPE="MEMORY" ASSIGNMENT="OPTIONAL" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="3" MPD_INDEX="1" MSB="0" NAME="C_HIGHADDR" TYPE="std_logic_vector" VALUE="0x0000FFFF">
           <DESCRIPTION>LMB BRAM High Address</DESCRIPTION>
         </PARAMETER>
         <PARAMETER ASSIGNMENT="OPTIONAL" CHANGEDBY="SYSTEM" MPD_INDEX="2" NAME="C_FAMILY" TYPE="string" VALUE="spartan6"/>
@@ -1468,7 +1468,7 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
       <MEMORYMAP>
-        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000ffff" MEMTYPE="MEMORY" MINSIZE="0x800" SIZE="65536" SIZEABRV="64K">
+        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000FFFF" MEMTYPE="MEMORY" MINSIZE="0x800" SIZE="65536" SIZEABRV="64K">
           <SLAVES>
             <SLAVE BUSINTERFACE="SLMB"/>
             <SLAVE BUSINTERFACE="SLMB1"/>
@@ -1492,7 +1492,7 @@
       <DESCRIPTION TYPE="SHORT">Block RAM (BRAM) Block</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">The BRAM Block is a configurable memory module that attaches to a variety of BRAM Interface Controllers.</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/bram_block_v1_00_a/doc/bram_block.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/bram_block_v1_00_a/doc/bram_block.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -1613,7 +1613,7 @@
       <DESCRIPTION TYPE="SHORT">MicroBlaze</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">The MicroBlaze 32 bit soft processor</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/microblaze_v8_40_a/doc/microblaze.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/microblaze_v8_40_a/doc/microblaze.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -4405,12 +4405,12 @@
         </BUSINTERFACE>
       </BUSINTERFACES>
       <MEMORYMAP>
-        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000ffff" INSTANCE="microblaze_0_d_bram_ctrl" IS_DATA="TRUE" IS_INSTRUCTION="FALSE" IS_VALID="TRUE" MEMTYPE="MEMORY" SIZE="65536" SIZEABRV="64K">
+        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000FFFF" INSTANCE="microblaze_0_d_bram_ctrl" IS_DATA="TRUE" IS_INSTRUCTION="FALSE" IS_VALID="TRUE" MEMTYPE="MEMORY" SIZE="65536" SIZEABRV="64K">
           <ACCESSROUTE>
             <ROUTEPNT INDEX="0" INSTANCE="microblaze_0_dlmb"/>
           </ACCESSROUTE>
         </MEMRANGE>
-        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000ffff" INSTANCE="microblaze_0_i_bram_ctrl" IS_DATA="FALSE" IS_INSTRUCTION="TRUE" IS_VALID="TRUE" MEMTYPE="MEMORY" SIZE="65536" SIZEABRV="64K">
+        <MEMRANGE BASEDECIMAL="0" BASENAME="C_BASEADDR" BASEVALUE="0x00000000" HIGHDECIMAL="65535" HIGHNAME="C_HIGHADDR" HIGHVALUE="0x0000FFFF" INSTANCE="microblaze_0_i_bram_ctrl" IS_DATA="FALSE" IS_INSTRUCTION="TRUE" IS_VALID="TRUE" MEMTYPE="MEMORY" SIZE="65536" SIZEABRV="64K">
           <ACCESSROUTE>
             <ROUTEPNT INDEX="0" INSTANCE="microblaze_0_ilmb"/>
           </ACCESSROUTE>
@@ -5458,7 +5458,7 @@
       <DESCRIPTION TYPE="SHORT">Clock Generator</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">Clock generator for processor system.</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/clock_generator_v4_03_a/doc/clock_generator.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/clock_generator_v4_03_a/doc/clock_generator.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -5840,7 +5840,7 @@
       <DESCRIPTION TYPE="SHORT">AXI Interconnect</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">AXI4 Memory-Mapped Interconnect</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_interconnect_v1_06_a/doc/ds768_axi_interconnect.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_interconnect_v1_06_a/doc/ds768_axi_interconnect.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -6689,7 +6689,7 @@
       <DESCRIPTION TYPE="SHORT">AXI Interconnect</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">AXI4 Memory-Mapped Interconnect</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_interconnect_v1_06_a/doc/ds768_axi_interconnect.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_interconnect_v1_06_a/doc/ds768_axi_interconnect.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -7637,7 +7637,7 @@
       <DESCRIPTION TYPE="SHORT">AXI UART (Lite)</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">Generic UART (Universal Asynchronous Receiver/Transmitter) for AXI.</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_uartlite_v1_02_a/doc/axi_uartlite_ds741.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_uartlite_v1_02_a/doc/axi_uartlite_ds741.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -7833,7 +7833,7 @@
       <DESCRIPTION TYPE="SHORT">AXI S6 Memory Controller(DDR/DDR2/DDR3)</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">Spartan-6 memory controller</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_s6_ddrx_v1_06_a/doc/ug416_axi_s6_ddrx.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/axi_s6_ddrx_v1_06_a/doc/ug416_axi_s6_ddrx.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>
@@ -9221,7 +9221,7 @@
       <DESCRIPTION TYPE="SHORT">Phase Locked Loop</DESCRIPTION>
       <DESCRIPTION TYPE="LONG">The PLL is a wrapper around PLL primitive which allows it to be used in the EDK tools suite</DESCRIPTION>
       <DOCUMENTATION>
-        <DOCUMENT SOURCE="E:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/pll_module_v2_00_a/doc/pll_module.pdf" TYPE="IP"/>
+        <DOCUMENT SOURCE="C:/Xilinx/14.2/ISE_DS/EDK/hw/XilinxProcessorIPLib/pcores/pll_module_v2_00_a/doc/pll_module.pdf" TYPE="IP"/>
       </DOCUMENTATION>
       <LICENSEINFO ICON_NAME="ps_core_preferred"/>
       <PARAMETERS>

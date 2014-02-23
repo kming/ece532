@@ -19,7 +19,7 @@
 /***************** Macros (Inline Functions) Definitions ********************/
 
 /************************** Function Prototypes *****************************/
-void track_wand (u32 *frame_ptr, Position *pos, u32 hres, u32 vres)
+void track_wand (u32 *frame_addr, Position *pos, u32 hres, u32 vres)
 {
 	pos->x = -1;
 	pos->y = -1;
@@ -45,18 +45,12 @@ void track_wand (u32 *frame_ptr, Position *pos, u32 hres, u32 vres)
 				for (offsety = y;  offsety < y + TW_YSTEP; offsety++)
 				{
 					// Determine the RGB values for the pixel
-					int scal = frame_ptr[offsety*hres + offsetx];
-
-					// obtain the individual colour contributions
-					u8 blue = (u8) (scal & TW_BLUE) >> TW_BLUE_OFFSET;
-					u8 green = (u8) (scal & TW_GREEN) >> TW_GREEN_OFFSET;
-					u8 red = (u8) (scal & TW_RED) >> TW_RED_OFFSET;
-
+					int scal = frame_addr[offsety*hres + offsetx];
 					// measures absolute difference of the blue component in the sliding window
-					sumofdiff = sumofdiff + 255 - blue;
+					sumofdiff = sumofdiff + 255 - (scal&0xFF);
 
 					// measure intensity of the whole sliding window
-					intensity = intensity + blue + green + red;
+					//intensity = intensity + scal.val[0] + scal.val[1] + scal.val[2];
 				}
 			}
 
@@ -77,55 +71,4 @@ void track_wand (u32 *frame_ptr, Position *pos, u32 hres, u32 vres)
 			}
 		}
 	}
-}
-
-// This function is used to test the track wand algorithm
-// by moving a small blue square across the screen and determining
-// the position from the computer generated frame
-int track_wand_test (u32 frame_addr, u32 hres, u32 vres)
-{
-	u32 * frame_ptr = (volatile u32 *) frame_addr;
-	int x,y,i,j;
-	int status = TW_PASS;
-	u32 pixel_value = 0;
-	Position wand_pos;
-
-	for (x=0; x < hres - TW_BOX_SIZE; x++)
-	{
-		for (y=0; y < vres - TW_BOX_SIZE; y++)
-		{
-			// Generate frame with a small blue box at the specific location
-			// Initialize DrawFrame - image to draw on top of VideoFrame
-			for (j = 0; j < vres; j++)
-			{
-				for (i = 0; i < hres; i++)
-				{
-					if(i >= x && i < x + TW_BOX_SIZE && j >= y && j < y + TW_BOX_SIZE)
-					{
-						pixel_value = TW_BLUE;	// Yellow box
-					} else
-					{
-						pixel_value = TW_WHITE;	// in a white frame
-					}
-					frame_ptr[j * hres + i] = pixel_value;
-				}
-			}
-
-			// Determine the location of the wand at the specific location.
-			track_wand (frame_ptr, &wand_pos, hres, vres);
-			if ((wand_pos.x > x + TW_BOX_SIZE) || (wand_pos.x < x - TW_BOX_SIZE) || (wand_pos.y > y + TW_BOX_SIZE) || (wand_pos.y < y - TW_BOX_SIZE))
-			{
-				// failed track wand!
-				status = TW_FAIL;
-				printf ("Tracked Position: x-->%d, y-->%d", wand_pos.x, wand_pos.y);
-				printf ("Box Position:     x-->%d, y-->%d", x, y);
-				break;
-			}
-		}
-		if (status == TW_FAIL)
-		{
-			break;
-		}
-	}
-	return status;
 }

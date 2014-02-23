@@ -15,6 +15,9 @@ extern "C" {
 /***************************** Include Files ********************************/
 
 /************************** Constant Definitions ****************************/
+#define FM_FALSE 0
+#define FM_TRUE 1
+#define FM_WHITE 0xFFFFFFFF
 
 #define TW_XSTEP 4								// horizontal window size
 #define TW_YSTEP 4								// vertical window size
@@ -27,23 +30,6 @@ extern "C" {
 #define TW_INT_MIN TW_NUM_PIXEL*3*TW_INT_MIN_TH	// minimum intensity threshold, a minimum ensures that it is activated by a bright enough source, i.e a light, not a random object
 #define TW_INT_MAX TW_NUM_PIXEL*3*TW_INT_MAX_TH	// maximum intensity threshold, a maximum to ensure it isn't a bright white light
 
-
-// Defines how the pixel structure and colour space values are organized
-#define TW_BLUE 0x0000FF00
-#define TW_BLUE_OFFSET 8
-#define TW_GREEN 0x00FF0000
-#define TW_GREEN_OFFSET 16
-#define TW_RED 0xFF000000
-#define TW_RED_OFFSET 24
-#define TW_WHITE 0xFFFFFFFF
-
-// Testing params
-#define TW_BOX_SIZE 5
-#define TW_PASS 1
-#define TW_FAIL 1
-
-
-
 /**************************** Type Definitions ******************************/
 
 typedef struct {
@@ -55,7 +41,7 @@ typedef struct {
 
 /************************** Function Prototypes *****************************/
 
-void track_wand (u32 *frame_ptr, Position *pos, u32 hres, u32 vres);
+void track_wand (u32 *frame_addr, Position *pos, u32 hres, u32 vres);
 
 
 #ifdef __cplusplus

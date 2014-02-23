@@ -15,6 +15,7 @@
 #include "xutil.h"
 #include "xuartlite.h"
 #include "frame_merge.h"
+#include "track_wand.h"
 
 #define printf xil_printf
 #define NUM_TEST_WORDS 8
@@ -48,8 +49,10 @@
 
 XUartLite UartLite;
 Frame_Merge Merge_IP;
+Position pos;
 
 int main() {
+
 
 	// -- INITIALIZATIONS -- //
 	volatile u32 *ddr_addr = (volatile u32 *) XPAR_S6DDR_0_S0_AXI_BASEADDR;
@@ -136,6 +139,9 @@ int main() {
 		}
 	}
 	printf ("Frame Initialization complete!\n");
+
+	// -- TRACK WAND OPERATION --
+	track_wand (ddr_addr, &pos, HRES, VRES);
 
 	// -- MERGE OPERATIONS --
 	frame_merge_sw (ddr_addr, (int)(DRAWFRAME_OFFSET), (int)(VIDEOFRAME_OFFSET), (int)(COMPFRAME_OFFSET), HRES, VRES);

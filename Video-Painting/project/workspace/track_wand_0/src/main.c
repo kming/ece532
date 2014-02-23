@@ -63,9 +63,6 @@ int main() {
 
 	XStatus status;
 
-	int i, j;
-	int k;
-	int DELAY = 10000;
 	char input;
 
 	status = XUtil_MemoryTest32((u32 *) ddr_addr,
@@ -85,96 +82,22 @@ int main() {
 		return -1;
 	}
 
-	// Initialize HDMI-OUT IP Block
-	hdmi_addr[0] = 1280; 									// hdmi_addr[0] corresponds to slv_reg2 --> Set Stride
-	hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);		// Display Comp Frame
-	hdmi_addr[2] = 0;										// Ensure Go signal is low
-
-	printf ("Setup of HDMI-OUT complete\n");
-
 	// -- FRAME INIT OPERATIONS --
-	// Initialize DrawFrame - image to draw on top of VideoFrame
-	for (j = 0; j < VRES; j++)
-	{
-		for (i = 0; i < HRES; i++)
-		{
-			if(i >= BOX_X0 && i < BOX_X1 && j >= BOX_Y0 && j < BOX_Y1)
-			{
-				pixel_value = YELLOW;	// Yellow box
-			} else
-			{
-				pixel_value = WHITE;	// in a white frame
-			}
-			ddr_addr[DRAWFRAME_OFFSET + j * HRES + i] = pixel_value;
-		}
-	}
-
-	// Initialize VideoFrame (input video, simulate as columns of solid colour (Blue/Red/Green) from left to right)
-	for (j = 0; j < VRES; j++)
-	{
-		for (i = 0; i < HRES/3; i++)
-		{
-			pixel_value = BLUE;
-			ddr_addr[VIDEOFRAME_OFFSET + j * HRES + i] = pixel_value;
-		}
-		for (i = HRES/3; i < 2*HRES/3; i++)
-		{
-			pixel_value = RED;
-			ddr_addr[VIDEOFRAME_OFFSET + j * HRES + i] = pixel_value;
-		}
-		for (i = 2*HRES/3; i < HRES; i++)
-		{
-			pixel_value = GREEN;
-			ddr_addr[VIDEOFRAME_OFFSET + j * HRES + i] = pixel_value;
-		}
-	}
-
-	// Initialize CompositeFrame (output video = VideoFrame + DrawFrame. Initialize as black)
-	for (j = 0; j < VRES; j++)
-	{
-		for (i = 0; i < HRES; i++)
-		{
-			pixel_value = BLACK;
-			ddr_addr[COMPFRAME_OFFSET + j * HRES + i] = pixel_value;
-		}
-	}
-	printf ("Frame Initialization complete!\n");
 
 	// -- TRACK WAND OPERATION --
-	track_wand (ddr_addr, &pos, HRES, VRES);
+	int return_value = track_wand_test (ddr_addr, HRES, VRES);
 
-	// -- MERGE OPERATIONS --
-	frame_merge_sw (ddr_addr, (int)(DRAWFRAME_OFFSET), (int)(VIDEOFRAME_OFFSET), (int)(COMPFRAME_OFFSET), HRES, VRES);
-
-	// Enable HDMI-OUT once merging is finished
-	hdmi_addr[2] = 1;
+	if (return_value == TW_FAIL)
+	{
+		printf ("TRACK WAND FAILED!\n");
+	}
+	else
+	{
+		printf ("TRACK WAND SUCCESS!\n")
+	}
 
 	printf ("Frame Merge complete!\n");
 
-	printf ("Enter (0/1/2) for (draw/video/composite) frames:\n");
-
-	// Allow user to switch between draw, video, and comp frames
-	// to output to screen
-	input = 0;
-	while(1)
-	{
-		XUartLite_Recv(&UartLite, &input, 1);	// Recv 1 byte (char) and store into buffer
-		switch (input)
-		{
-		case '0':	// DrawFrame
-			hdmi_addr[1] = (int)(ddr_addr + DRAWFRAME_OFFSET);
-			break;
-		case '1':	// VideoFrame
-			hdmi_addr[1] = (int)(ddr_addr + VIDEOFRAME_OFFSET);
-			break;
-		case '2':	// CompFrame
-			hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);
-			break;
-		default:
-			hdmi_addr[1] = (int)(ddr_addr + COMPFRAME_OFFSET);
-			break;
-		}
-	}
 
 	printf("Exiting\n\r");
 
