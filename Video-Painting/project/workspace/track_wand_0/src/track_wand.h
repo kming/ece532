@@ -22,13 +22,14 @@ extern "C" {
 #define TW_INT_MIN_TH 150							// average minimum intensity per pixel/colour space (0-255)
 #define TW_INT_MAX_TH 200							// average max intensity per pixel/colour space (0-255)
 
-#define TW_NUM_PIXEL TW_XSTEP*TW_YSTEP			// number of pixels in the window
-#define TW_THRESHOLD TW_NUM_PIXEL*TW_TOL_PIXEL 	// number of pixels in the window * the total tolerance per pixel
-#define TW_INT_MIN TW_NUM_PIXEL*3*TW_INT_MIN_TH	// minimum intensity threshold, a minimum ensures that it is activated by a bright enough source, i.e a light, not a random object
-#define TW_INT_MAX TW_NUM_PIXEL*3*TW_INT_MAX_TH	// maximum intensity threshold, a maximum to ensure it isn't a bright white light
+#define TW_NUM_PIXEL (TW_XSTEP*TW_YSTEP)			// number of pixels in the window
+#define TW_THRESHOLD (TW_NUM_PIXEL*TW_TOL_PIXEL) 	// number of pixels in the window * the total tolerance per pixel
+#define TW_INT_MIN (TW_NUM_PIXEL*3*TW_INT_MIN_TH)	// minimum intensity threshold, a minimum ensures that it is activated by a bright enough source, i.e a light, not a random object
+#define TW_INT_MAX (TW_NUM_PIXEL*3*TW_INT_MAX_TH)	// maximum intensity threshold, a maximum to ensure it isn't a bright white light
 
 
 // Defines how the pixel structure and colour space values are organized
+#define TW_BRIGHT_BLUE 0x9696FF00
 #define TW_BLUE 0x0000FF00
 #define TW_BLUE_OFFSET 8
 #define TW_GREEN 0x00FF0000
@@ -36,9 +37,10 @@ extern "C" {
 #define TW_RED 0xFF000000
 #define TW_RED_OFFSET 24
 #define TW_WHITE 0xFFFFFFFF
+#define TW_BLACK 0x00000000
 
 // Testing params
-#define TW_BOX_SIZE 5
+#define TW_BOX_SIZE 9
 #define TW_PASS 1
 #define TW_FAIL 1
 
@@ -56,6 +58,8 @@ typedef struct {
 /************************** Function Prototypes *****************************/
 
 void track_wand (u32 *frame_ptr, Position *pos, u32 hres, u32 vres);
+int track_wand_test (u32* frame_ptr, Position *pos, Position *actual_pos, u32 hres, u32 vres);
+void track_wand_single_test (u32* frame_ptr, Position *pos, Position *actual_pos, u32 hres, u32 vres);
 
 
 #ifdef __cplusplus

@@ -49,7 +49,8 @@
 
 XUartLite UartLite;
 Frame_Merge Merge_IP;
-Position pos;
+Position tracked_pos;
+Position actual_pos;
 
 int main() {
 
@@ -63,6 +64,9 @@ int main() {
 
 	XStatus status;
 
+	int i, j;
+	int k;
+	int DELAY = 10000;
 	char input;
 
 	status = XUtil_MemoryTest32((u32 *) ddr_addr,
@@ -82,22 +86,74 @@ int main() {
 		return -1;
 	}
 
-	// -- FRAME INIT OPERATIONS --
+	// Initialize HDMI-OUT IP Block
+	hdmi_addr[0] = 1280; 									// hdmi_addr[0] corresponds to slv_reg2 --> Set Stride
+	hdmi_addr[1] = (int)(ddr_addr + DRAWFRAME_OFFSET);		// Display Comp Frame
+	hdmi_addr[2] = 1;										// Ensure Go signal is low
+
+	printf ("Setup of HDMI-OUT complete\n\r");
 
 	// -- TRACK WAND OPERATION --
-	int return_value = track_wand_test (ddr_addr, HRES, VRES);
+	printf ("Initiating Track Wand Test\r\n");
+	actual_pos.x = 0;
+	actual_pos.y = 0;
+	track_wand_single_test (ddr_addr, &tracked_pos, &actual_pos, HRES, VRES);
 
-	if (return_value == TW_FAIL)
+	printf ("Position tracked %d, %d\r\n", tracked_pos.x, tracked_pos.y);
+	printf ("Actual Position  %d, %d\r\n", actual_pos.x, actual_pos.y);
+
+	printf ("Enter (4/6/2/8) to move box (Left/Right/Down/Up)\n\r");
+	// Allow user to switch between draw, video, and comp frames
+	// to output to screen
+	input = 0;
+	while(1)
 	{
-		printf ("TRACK WAND FAILED!\n");
-	}
-	else
-	{
-		printf ("TRACK WAND SUCCESS!\n")
-	}
+		XUartLite_Recv(&UartLite, &input, 1);	// Recv 1 byte (char) and store into buffer
+		switch (input)
+		{
+		case '8':	// DrawFrame
+			if (actual_pos.y > 0)
+			{
+				actual_pos.y = actual_pos.y - TW_BOX_SIZE;
+				track_wand_single_test (ddr_addr, &tracked_pos, &actual_pos, HRES, VRES);
+				printf ("Position tracked %d, %d\r\n", tracked_pos.x, tracked_pos.y);
+				printf ("Actual Position  %d, %d\r\n", actual_pos.x, actual_pos.y);
+			}
+			break;
+		case '4':	// VideoFrame
+			if (actual_pos.x > 0)
+			{
+				actual_pos.x = actual_pos.x - TW_BOX_SIZE;
+				track_wand_single_test (ddr_addr, &tracked_pos, &actual_pos, HRES, VRES);
+				printf ("Position tracked %d, %d\r\n", tracked_pos.x, tracked_pos.y);
+				printf ("Actual Position  %d, %d\r\n", actual_pos.x, actual_pos.y);
+			}
 
-	printf ("Frame Merge complete!\n");
+			break;
+		case '2':	// CompFrame
+			if (actual_pos.y < VRES - 2*TW_BOX_SIZE)
+			{
+				actual_pos.y = actual_pos.y + TW_BOX_SIZE;
+				track_wand_single_test (ddr_addr, &tracked_pos, &actual_pos, HRES, VRES);
+				printf ("Position tracked %d, %d\r\n", tracked_pos.x, tracked_pos.y);
+				printf ("Actual Position  %d, %d\r\n", actual_pos.x, actual_pos.y);
+			}
 
+			break;
+		case '6':	// CompFrame
+			if (actual_pos.x < HRES - 2*TW_BOX_SIZE)
+			{
+				actual_pos.x = actual_pos.x + TW_BOX_SIZE;
+				track_wand_single_test (ddr_addr, &tracked_pos, &actual_pos, HRES, VRES);
+				printf ("Position tracked %d, %d\r\n", tracked_pos.x, tracked_pos.y);
+				printf ("Actual Position  %d, %d\r\n", actual_pos.x, actual_pos.y);
+			}
+			break;
+		default:
+			break;
+		}
+		input = ' ';
+	}
 
 	printf("Exiting\n\r");
 
